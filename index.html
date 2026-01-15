@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Sistema de Simulado LDB 25/26</title>
+    <link rel="stylesheet" href="https://cristianmarquesdevx.github.io/S.LDB-Cliente/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para a página de login */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .login-logo {
+            margin-bottom: 30px;
+        }
+        
+        .login-logo i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .login-logo h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.2rem;
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .login-subtitle {
+            color: var(--gray-color);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+        
+        .login-form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 0.95rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Roboto', sans-serif;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .login-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .error-message {
+            background: rgba(247, 37, 133, 0.1);
+            color: var(--danger-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+            font-weight: 500;
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .login-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .feature-item i {
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 25px;
+            }
+            
+            .login-features {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animação de loading */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-card">
+        
+        <div class="login-logo">
+            <i class="fas fa-graduation-cap"></i>
+            <h1>Simulado LDB 25/26</h1>
+            <div class="login-subtitle">
+                Sistema de Simulados Online
+                <p>Desenvolvido por: <strong>Cristian Marques</strong></p>
+            </div>
+        </div>
+        
+        <div class="login-form">
+            <form id="loginForm" onsubmit="event.preventDefault(); fazerLogin();">
+                <div class="form-group">
+                    <label for="loginUser">
+                        <i class="fas fa-user"></i> Usuário
+                    </label>
+                    <input 
+                        type="text" 
+                        id="loginUser" 
+                        class="form-control"
+                        placeholder="Digite seu usuário"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPass">
+                        <i class="fas fa-lock"></i> Senha
+                    </label>
+                    <input 
+                        type="password" 
+                        id="loginPass" 
+                        class="form-control"
+                        placeholder="Digite sua senha"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+                
+                <div id="loginErro" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Usuário ou senha inválidos. Tente novamente.</span>
+                </div>
+                
+                <button type="submit" class="login-btn" id="btnLogin">
+                    <span id="btnText">Entrar no Sistema</span>
+                    <div class="spinner" id="btnSpinner"></div>
+                    <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </form>
+        </div>
+        
+        <div class="login-features">
+            <div class="feature-item">
+                <i class="fas fa-clock"></i>
+                <span>Tempo real de prova</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Estatísticas detalhadas</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Questões atualizadas</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-file-alt"></i>
+                <span>Relatórios completos</span>
+            </div>
+        </div>
+        
+        <div class="login-footer">
+            <p>
+                <i class="fas fa-external-link-alt"></i>
+                Após o login, você será redirecionado para o sistema completo
+            </p>
+            <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">
+                Sistema seguro com autenticação por token
+            </p>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+// Configurações
+const USUARIO_PADRAO = "CristianMarquesDevX";
+const SENHA_PADRAO = "sx290516C#";
+const CLIENTES = [
+    { 
+        usuario: "Suely", 
+        senha: "@suely1234", 
+        nome: "Suely",
+        tipo: "cliente_premium"
+    },
+    { 
+        usuario: "Daniele Mendes", 
+        senha: "a1b2c3d4#", 
+        nome: "Daniele Mendes",
+        tipo: "cliente_basico"
+    },
+    { 
+        usuario: "France Rose", 
+        senha: "a1b2c3d4#", 
+        nome: "France Rose",
+        tipo: "cliente_basico"
+    },
+    {
+        usuario: "Regina Mendes",
+        senha: "regina2026#",
+        nome: "Regina Mendes",
+        tipo: "cliente_premium"
+    },
+];
+
+const TOKEN_EXPIRACAO_HORAS = 8;
+const URL_SIMULADO = "https://cristianmarquesdevx.github.io/S.LDB-Cliente/";
+const URL_LOGIN = "https://cristianmarquesdevx.github.io/login-simulado/login.html";
+
+// Elementos DOM
+let loginUser, loginPass, loginErro, btnLogin, btnText, btnSpinner;
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    loginUser = document.getElementById('loginUser');
+    loginPass = document.getElementById('loginPass');
+    loginErro = document.getElementById('loginErro');
+    btnLogin = document.getElementById('btnLogin');
+    btnText = document.getElementById('btnText');
+    btnSpinner = document.getElementById('btnSpinner');
+    
+    // Verifica se já está logado
+    verificarLoginExistente();
+    
+    // Configura eventos
+    loginUser.addEventListener('focus', resetarErro);
+    loginPass.addEventListener('focus', resetarErro);
+    
+    // Foco automático no campo de usuário
+    loginUser.focus();
+    
+    // Evento de tecla Enter
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            fazerLogin();
+        }
+    });
+});
+
+// Função de login
+function fazerLogin() {
+    const user = loginUser.value.trim();
+    const pass = loginPass.value;
+    
+    // Validação básica
+    if (!user || !pass) {
+        mostrarErro('Preencha todos os campos');
+        return;
+    }
+    
+    // Mostrar loading
+    mostrarLoading(true);
+    
+    // Simular delay de rede
+    setTimeout(() => {
+        // Verifica se é administrador
+        if (user === USUARIO_PADRAO && pass === SENHA_PADRAO) {
+            loginSucesso({
+                usuario: USUARIO_PADRAO,
+                nome: "Administrador",
+                tipo: "admin"
+            });
+            return;
+        }
+        
+        // Verifica se é cliente
+        const clienteEncontrado = CLIENTES.find(cliente => 
+            cliente.usuario === user && cliente.senha === pass
+        );
+        
+        if (clienteEncontrado) {
+            loginSucesso(clienteEncontrado);
+            return;
+        }
+        
+        // Se não encontrou nenhum
+        loginFalhou();
+    }, 800);
+}
+
+// Função para login bem-sucedido
+function loginSucesso(dadosUsuario) {
+    // Gerar token de acesso
+    const token = gerarToken(dadosUsuario.usuario);
+    
+    // Salvar dados de sessão
+    const sessionData = {
+        usuario: dadosUsuario.usuario,
+        nome: dadosUsuario.nome,
+        tipo: dadosUsuario.tipo || "cliente",
+        token: token,
+        timestamp: Date.now(),
+        expira: Date.now() + (TOKEN_EXPIRACAO_HORAS * 60 * 60 * 1000)
+    };
+    
+    // Armazenar no localStorage
+    localStorage.setItem('simulado_session', JSON.stringify(sessionData));
+    localStorage.setItem('simulado_token', token);
+    localStorage.setItem('simulado_usuario', dadosUsuario.usuario);
+    localStorage.setItem('simulado_tipo', dadosUsuario.tipo || "cliente");
+    localStorage.setItem('simulado_nome', dadosUsuario.nome);
+    
+    // Animar botão de sucesso
+    btnLogin.style.background = '#38b000';
+    btnText.innerHTML = 'Login bem-sucedido!';
+    btnLogin.querySelector('.fa-sign-in-alt').className = 'fas fa-check';
+    
+    // Redirecionar após breve delay
+    setTimeout(() => {
+        window.location.href = URL_SIMULADO + '?token=' + token + 
+                              '&usuario=' + encodeURIComponent(dadosUsuario.usuario) +
+                              '&nome=' + encodeURIComponent(dadosUsuario.nome) +
+                              '&tipo=' + encodeURIComponent(dadosUsuario.tipo || "cliente");
+    }, 1200);
+}
+
+// Função para login falhou
+function loginFalhou() {
+    mostrarLoading(false);
+    mostrarErro('Usuário ou senha incorretos');
+    
+    // Efeito de shake no formulário
+    loginUser.style.borderColor = 'var(--danger-color)';
+    loginPass.style.borderColor = 'var(--danger-color)';
+    
+    // Focar no campo de usuário e selecionar texto
+    loginUser.focus();
+    loginUser.select();
+    
+    // Restaurar cores após 2 segundos
+    setTimeout(() => {
+        loginUser.style.borderColor = '';
+        loginPass.style.borderColor = '';
+    }, 2000);
+}
+
+// Gerar token de segurança
+function gerarToken(usuario) {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 15);
+    const hash = btoa(`${usuario}:${timestamp}:${random}`).replace(/=/g, '');
+    return `simulado_${hash}_${timestamp}`;
+}
+
+// Verificar se já está logado
+function verificarLoginExistente() {
+    try {
+        const session = localStorage.getItem('simulado_session');
+        if (!session) return;
+        
+        const sessionData = JSON.parse(session);
+        const agora = Date.now();
+        
+        // Verificar se a sessão ainda é válida
+        if (sessionData.expira > agora) {
+            // Se tiver menos de 5 minutos desde o último login, redireciona direto
+            if (agora - sessionData.timestamp < 5 * 60 * 1000) {
+                window.location.href = URL_SIMULADO + '?token=' + sessionData.token;
+            }
+        } else {
+            // Sessão expirada, limpar
+            localStorage.removeItem('simulado_session');
+            localStorage.removeItem('simulado_token');
+            localStorage.removeItem('simulado_usuario');
+            localStorage.removeItem('simulado_tipo');
+            localStorage.removeItem('simulado_nome');
+        }
+    } catch (e) {
+        console.error('Erro ao verificar sessão:', e);
+    }
+}
+
+// Mostrar/ocultar loading
+function mostrarLoading(mostrar) {
+    if (mostrar) {
+        btnText.style.display = 'none';
+        btnSpinner.style.display = 'block';
+        btnLogin.disabled = true;
+        btnLogin.style.opacity = '0.8';
+    } else {
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+        btnLogin.disabled = false;
+        btnLogin.style.opacity = '1';
+    }
+}
+
+// Mostrar mensagem de erro
+function mostrarErro(mensagem) {
+    loginErro.querySelector('span').textContent = mensagem;
+    loginErro.style.display = 'flex';
+    loginErro.style.animation = 'fadeIn 0.3s ease';
+}
+
+// Resetar mensagem de erro
+function resetarErro() {
+    loginErro.style.display = 'none';
+    loginUser.style.borderColor = '';
+    loginPass.style.borderColor = '';
+}
+
+// Função para adicionar novos clientes dinamicamente (para uso no console)
+function adicionarCliente(novoUsuario, novaSenha, nomeCliente, tipo = "cliente_basico") {
+    CLIENTES.push({
+        usuario: novoUsuario,
+        senha: novaSenha,
+        nome: nomeCliente,
+        tipo: tipo
+    });
+    console.log(`Cliente ${nomeCliente} adicionado com sucesso!`);
+    console.log('Total de clientes:', CLIENTES.length);
+}
+
+// Função para debug
+console.log('Sistema de Login - Simulado LDB 25/26');
+console.log('Clientes disponíveis:', CLIENTES.map(c => c.usuario));
+console.log('URL do Simulado:', URL_SIMULADO);
+console.log('URL do Login:', URL_LOGIN);
+
+// Exemplo de uso no console para adicionar novo cliente:
+// adicionarCliente("novo_cliente", "#NovaSenha2026", "Novo Cliente", "cliente_premium");
+</script>
+
+</body>
+</html>
